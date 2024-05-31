@@ -15,3 +15,9 @@ function generateNewTable(tmp_sheetName) {
 function test(){
   generateNewTable(LogSheetName);
 }
+
+// 新学期押下時にはすべて作成しなおす
+function createClassDetailTable(){
+  generateNewTable(ClassesListSheetName);
+  generateNewTable(LogSheetName);
+}
