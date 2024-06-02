@@ -25,3 +25,10 @@ const AttendanceStatuses = [
   "休校",
 ]
 
+
+// lineBot
+const BotConfigSheet = "lineBotConfig";
+
+const BotToMe = 4;
+const Token = 1;
+
