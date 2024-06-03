@@ -1,4 +1,4 @@
-
+// メッセージを送信する関数
 function pushMessage(m,u) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BotConfigSheet);
   var accessToken = sheet.getRange(Token,2).getValue();
@@ -26,6 +26,7 @@ function pushMessage(m,u) {
 
 }
 
+// LINEBot用の返信関数
 function replyMessage(m,re_token){
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BotConfigSheet);
   var accessToken = sheet.getRange(Token,2);
@@ -51,31 +52,30 @@ function replyMessage(m,re_token){
   UrlFetchApp.fetch(replyUrl,params);
 }
 
+
+// 送られた文字列から返信用の文字列を返す
 function Textbranch(key){
+  // 稼ぎとか聞かれたら
   if(key.match('稼')){
     if(i=key.match('月')){
       src=Number(key[i.index-1]);
       if(judgeNum(key[i.index-2]))src+=10*Number(key[i.index-2])
-      //Logger.log(key[i.index-1]);
-      //Logger.log(salay(Number(key[i.index-1])-1));
       return salay(src).toString()+' JPY';
     }else{
-      //Logger.log(salay(new Date().getMonth()))
       return salay(new Date().getMonth()).toString()+' JPY';
     }
   }
+  // 給料てことば入ってたら
   else if(key.match('給料')){
     if(i=key.match('月')){
       src=Number(key[i.index-1]);
       if(judgeNum(key[i.index-2]))src+=10*Number(key[i.index-2])
-      //Logger.log(key[i.index-1]);
-      //Logger.log(salay(Number(key[i.index-1])-2));
       return salay(src-1).toString()+' JPY';
     }else{
-      //Logger.log(salay(new Date().getMonth()-1))
       return salay(new Date().getMonth()).toString()+' JPY';
     }
   }
+  // 予定聞かれたら
   else if(key.match('予定')){
     now = new Date();
     if(i=key.match('月')){
@@ -91,7 +91,6 @@ function Textbranch(key){
     }
     else if(i=key.match('日')){
       if(key.match('明日')){
-
       }else{
         Dsrc=Number(key[i.index-1]);
         if(judgeNum(key[i.index-2]))Dsrc+=10*Number(key[i.index-2]);
@@ -100,23 +99,15 @@ function Textbranch(key){
     }else{
       return getDayEvents(now.getFullYear(),now.getMonth()+1,now.getDate());
     }
-  }else{
+  }
+  // それ以外
+  else{
     return 'なに言ってんの？';
   }
-  
-
 }
 
 
-function todoCalendar(key,m,d){
-  var calendar=CalendarApp.getOwnedCalendarsByName('todo');
-  if(key=='add'){
-
-  }else if(key=='get'){
-
-  }else if(key==''){}
-}
-
+// その日のイベントを返す。デフォルトのカレンダーのみ
 function getDayEvents(y,m,d){
   time = new Date(y,m-1,d);
   var calendar =CalendarApp.getDefaultCalendar();
@@ -139,9 +130,10 @@ function getDayEvents(y,m,d){
     src+='合計'+events.length+'個の予定があるよ！'
   }
   return src;
-  
 }
 
+// monthの月のばの予定の時間*時給を返す
+// 時給を定数化したい
 function salay(month) {
   var now=new Date();
   var startTime=new Date(now.getFullYear(),month-1,1);
@@ -154,10 +146,11 @@ function salay(month) {
     let d=events[i].getEndTime()-events[i].getStartTime()
     workTime+=(d/1000/60/60);
   }
-
+  // 最低自給
   return workTime*1023
 }
 
+// morningCallを朝のイベントとして登録しとく
 function morningCall(){
   pushMessage('おはよう！',toMe);
   pushMessage(Textbranch('予定'),toMe);
