@@ -3,13 +3,23 @@ function pushMessage(m,u) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BotConfigSheet);
   var accessToken = sheet.getRange(Token,2).getValue();
 
+  var user = sheet.getRange(BotToMe,2).getValue();
+
+  var value = sheet.getRange(1,1,sheet.getLastRow(),2);
+
+  for(var key in value){
+    if(value[key][0]==u){
+      user = value[key][1];
+    }
+  }
+
   var header={
     'Content-type': 'application/json',
     'Authorization': 'Bearer '+accessToken
   }
 
   var src_payload={
-    'to':u,
+    'to':user,
     "messages":[{
       'type':'text',
       'text':m
@@ -152,9 +162,10 @@ function salay(month) {
 
 // morningCallを朝のイベントとして登録しとく
 function morningCall(){
-  pushMessage('おはよう！',toMe);
-  pushMessage(Textbranch('予定'),toMe);
+  pushMessage('おはよう！','toMe');
+  pushMessage(Textbranch('予定'),'toMe');
 }
+
 
 function judgeNum(key){
   if(Number(key)===0||Number(key)===1||Number(key)===2||Number(key)===3||Number(key)===4||Number(key)===5||Number(key)===6||Number(key)===7||Number(key)===8||Number(key)===9)return true;
